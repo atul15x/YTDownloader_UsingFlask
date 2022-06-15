@@ -1,0 +1,27 @@
+
+            temp = tempfile.TemporaryDirectory()
+            print("temp 1 is --{0}".format(temp))
+            try:
+                ydl_opts ={
+                    'format': 'bestaudio/best',
+                    'outtmpl': '{0}\%(title)s.%(ext)s'.format(temp),
+                    'postprocessors': 
+                    [{
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': 'mp3',
+                        'preferredquality': '192',
+                    }]
+                }
+                with youtube_dl.YoutubeDL(ydl_opts) as ydl:                       
+                    info = ydl.extract_info(url,download=False)
+                    video_title = info.get('title', None)
+                    audio_title = video_title.replace("|","_").replace(":"," -").replace("*","_").replace('"',"'")
+                    print("Youtube title is -- {0}".format(audio_title))
+
+                    audio = ydl.download([url])
+                    Song_Old_name = '{0}\{1}.mp3'.format(temp,audio_title)
+                    
+                    print("temp 2 is --{0}".format(Song_Old_name))
+                    return send_file(Song_Old_name, attachment_filename= audio_title + '.mp3', as_attachment=True) 
+            finally:
+                temp.cleanup()
