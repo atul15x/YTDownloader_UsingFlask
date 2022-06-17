@@ -34,6 +34,20 @@ def see_audio():
                 file_bytes = f.read()
             return send_file(BytesIO(file_bytes),  attachment_filename=title + '.mp3' , as_attachment=True)
 
+@app.route('/video', methods = ['POST','GET'])
+def see_video():
+    if request.method == 'POST':
+            
+        url = request.form.get('videourl') 
+        my_audio = YouTube(url)
+        with TemporaryDirectory() as tmp_dir:
+            title = my_audio.title
+            audio = my_audio.streams.get_highest_resolution().download(tmp_dir)
+            file_bytes = b""
+            with open(audio, "rb") as f:
+                file_bytes = f.read()
+            return send_file(BytesIO(file_bytes),  attachment_filename=title + '.mp4' , as_attachment=True)
+
 
 
 ### End YTDownloader #####
