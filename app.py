@@ -3,6 +3,7 @@ import os
 from pytube import YouTube
 from io import BytesIO
 from tempfile import TemporaryDirectory
+from moviepy.editor import *
 
 app = Flask(__name__)
 
@@ -28,9 +29,20 @@ def see_audio():
         my_audio = YouTube(url)
         with TemporaryDirectory() as tmp_dir:
             title = my_audio.title
-            audio = my_audio.streams.get_by_itag(140).download(tmp_dir)
+            finaltitle = title.replace("|","_")
+
+            mp4File = "{downPath}/{fname}.mp4".format(fname=finaltitle,downPath=tmp_dir)
+            mp3File = "{downPath}/{filename}.mp3".format(filename = finaltitle, downPath=tmp_dir)
+            audio = my_audio.streams.get_highest_resolution().download(output_path= tmp_dir ,filename="{fname}.mp4".format(fname=finaltitle))
+            videoClip = VideoFileClip(mp4File)
+            audioClip = videoClip.audio
+            audioClip.write_audiofile(mp3File)
+
+            audioClip.close()
+            videoClip.close()
+
             file_bytes = b""
-            with open(audio, "rb") as f:
+            with open(mp3File, "rb") as f:
                 file_bytes = f.read()
             return send_file(BytesIO(file_bytes),  attachment_filename=title + '.mp3' , as_attachment=True)
 
