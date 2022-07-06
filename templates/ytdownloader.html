@@ -11,6 +11,14 @@
         *{
             font-family: 'Inconsolata', monospace;
         }
+        #loding
+        {
+            display: none;
+        }
+        #lodingvideo
+        {
+            display: none;
+        }
     </style>
     <title>YT Downloader</title>
     
@@ -91,13 +99,21 @@
                     <div class="col-md-5 col-sm-12">
                         <form action="/audio" method="POST">
                             <input  name="audiourl" type="hidden"  value= "{{getvideourl}}"  >
-                            <button type="submit"  class="btn btn-dark">Audio</button>
+                            <button id="audiobtn" type="submit"  class="btn btn-dark">Audio</button>
                         </form>
+                        <button id="loding" class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only">Loading...</span>
+                        </button>
                         <br>
                         <form action="/video" method="POST" id="videoDownload">
                             <input  name="videourl" type="hidden"  value= "{{getvideourl}}"  >
                             <button type="submit"  id="videobtn1"  class="btn btn-dark">Video</button>
                         </form>
+                        <button id="lodingvideo" class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="sr-only">Loading...</span>
+                        </button>
                         <br>
                     </div>
                 </div>
@@ -141,7 +157,15 @@
 
         $('#videobtn1').click(function(){
 
-            $('#progress').css('display','block');
+            $('#lodingvideo').css('display','block');
+            $('#videobtn1').css('display','none');
+
+        })
+
+        $('#audiobtn').click(function(){
+
+            $('#loding').css('display','block');
+            $('#audiobtn').css('display','none');
 
         })
 
